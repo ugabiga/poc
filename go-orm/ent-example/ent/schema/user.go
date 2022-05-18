@@ -1,6 +1,12 @@
 package schema
 
-import "entgo.io/ent"
+import (
+	"time"
+
+	"entgo.io/ent"
+	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
+)
 
 // User holds the schema definition for the User entity.
 type User struct {
@@ -9,7 +15,17 @@ type User struct {
 
 // Fields of the User.
 func (User) Fields() []ent.Field {
-	return nil
+	return []ent.Field{
+		field.UUID("uuid", uuid.UUID{}).
+			Default(uuid.New),
+		field.String("first_name"),
+		field.String("last_name"),
+		field.Time("updated_at").
+			Default(time.Now).
+			UpdateDefault(time.Now),
+		field.Time("created_at").
+			Default(time.Now),
+	}
 }
 
 // Edges of the User.
