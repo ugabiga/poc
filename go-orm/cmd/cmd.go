@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	ent_example "go-orm/ent-example"
 
 	"github.com/spf13/cobra"
 )
@@ -23,6 +24,7 @@ var entCmd = &cobra.Command{
 	Short: "Run ent example",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("ent command")
+		ent_example.Run()
 	},
 }
 
