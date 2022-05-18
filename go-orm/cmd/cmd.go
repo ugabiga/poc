@@ -23,7 +23,6 @@ var entCmd = &cobra.Command{
 	Use:   "ent",
 	Short: "Run ent example",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("ent command")
 		ent_example.Run()
 	},
 }
