@@ -13,19 +13,9 @@ import (
 	"go-orm/ent-example/ent"
 )
 
-func MakeClient() *ent.Client {
-	client, err := ent.Open(
-		"postgres",
-		config.GetDBString(),
-	)
-	panicErr(err)
-
-	return client
-}
-
 func GenerateMigration() {
 	ctx := context.Background()
-	client := MakeClient()
+	client := makeClient()
 	defer func(client *ent.Client) {
 		err := client.Close()
 		if err != nil {
@@ -43,7 +33,7 @@ func GenerateMigration() {
 
 func Run() {
 	ctx := context.Background()
-	client := MakeClient()
+	client := makeClient()
 
 	newUser, err := client.User.
 		Create().
@@ -65,6 +55,16 @@ func Run() {
 	userTodos, err := newUser.QueryTodos().All(ctx)
 	panicErr(err)
 	log.Println(userTodos)
+}
+
+func makeClient() *ent.Client {
+	client, err := ent.Open(
+		"postgres",
+		config.GetDBString(),
+	)
+	panicErr(err)
+
+	return client
 }
 
 func panicErr(err error) {
