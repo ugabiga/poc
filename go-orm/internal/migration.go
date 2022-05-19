@@ -20,8 +20,8 @@ func makeMigrate() *migrate.Migrate {
 		log.Fatal(err)
 	}
 
-	//entMigrationPath := "file://ent_example/migrations"
-	sqlcMigrationPath := "file://sqlc_example/db/migrations"
+	//entMigrationPath := "file://examples/ent_example/migrations"
+	sqlcMigrationPath := "file://examples/sqlc_example/db/migrations"
 
 	m, err := migrate.NewWithDatabaseInstance(
 		sqlcMigrationPath,

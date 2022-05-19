@@ -2,11 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"go-orm/ent_example"
-	"go-orm/internal"
-	"go-orm/sqlc_example"
-
 	"github.com/spf13/cobra"
+	"go-orm/examples/ent_example"
+	"go-orm/examples/sqlc_example"
+	"go-orm/internal"
 )
 
 func init() {
