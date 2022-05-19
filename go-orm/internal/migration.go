@@ -30,15 +30,11 @@ func makeMigrate() *migrate.Migrate {
 func UpMigration() {
 	m := makeMigrate()
 	err := m.Up()
-	if err != nil {
-		log.Fatal(err)
-	}
+	PanicErr(err)
 }
 
 func DownMigration() {
 	m := makeMigrate()
 	err := m.Down()
-	if err != nil {
-		log.Fatal(err)
-	}
+	PanicErr(err)
 }

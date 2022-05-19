@@ -34,17 +34,11 @@ var entCmd = &cobra.Command{
 	},
 }
 
-//goland:noinspection GoPrintFunctions
 var entMigrateCmd = &cobra.Command{
 	Use:   "migrate",
 	Short: "Run ent migration",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(`
-Usage: migrate OPTIONS
-
-Options:
-  generate         Generate ent migration
-`)
+		fmt.Println("migrate")
 	},
 }
 

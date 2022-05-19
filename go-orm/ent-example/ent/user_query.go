@@ -386,7 +386,6 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			nodeids[nodes[i].ID] = nodes[i]
 			nodes[i].Edges.Todos = []*Todo{}
 		}
-		query.withFKs = true
 		query.Where(predicate.Todo(func(s *sql.Selector) {
 			s.Where(sql.InValues(user.TodosColumn, fks...))
 		}))
@@ -395,13 +394,10 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.user_todos
-			if fk == nil {
-				return nil, fmt.Errorf(`foreign-key "user_todos" is nil for node %v`, n.ID)
-			}
-			node, ok := nodeids[*fk]
+			fk := n.UserID
+			node, ok := nodeids[fk]
 			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_todos" returned %v for node %v`, *fk, n.ID)
+				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 			}
 			node.Edges.Todos = append(node.Edges.Todos, n)
 		}

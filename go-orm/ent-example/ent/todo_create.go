@@ -21,6 +21,20 @@ type TodoCreate struct {
 	hooks    []Hook
 }
 
+// SetUserID sets the "user_id" field.
+func (tc *TodoCreate) SetUserID(i int) *TodoCreate {
+	tc.mutation.SetUserID(i)
+	return tc
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (tc *TodoCreate) SetNillableUserID(i *int) *TodoCreate {
+	if i != nil {
+		tc.SetUserID(*i)
+	}
+	return tc
+}
+
 // SetTitle sets the "title" field.
 func (tc *TodoCreate) SetTitle(s string) *TodoCreate {
 	tc.mutation.SetTitle(s)
@@ -63,20 +77,6 @@ func (tc *TodoCreate) SetCreatedAt(t time.Time) *TodoCreate {
 func (tc *TodoCreate) SetNillableCreatedAt(t *time.Time) *TodoCreate {
 	if t != nil {
 		tc.SetCreatedAt(*t)
-	}
-	return tc
-}
-
-// SetUserID sets the "user" edge to the User entity by ID.
-func (tc *TodoCreate) SetUserID(id int) *TodoCreate {
-	tc.mutation.SetUserID(id)
-	return tc
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (tc *TodoCreate) SetNillableUserID(id *int) *TodoCreate {
-	if id != nil {
-		tc = tc.SetUserID(*id)
 	}
 	return tc
 }
@@ -284,7 +284,7 @@ func (tc *TodoCreate) createSpec() (*Todo, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_todos = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

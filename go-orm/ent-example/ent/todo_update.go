@@ -29,6 +29,26 @@ func (tu *TodoUpdate) Where(ps ...predicate.Todo) *TodoUpdate {
 	return tu
 }
 
+// SetUserID sets the "user_id" field.
+func (tu *TodoUpdate) SetUserID(i int) *TodoUpdate {
+	tu.mutation.SetUserID(i)
+	return tu
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (tu *TodoUpdate) SetNillableUserID(i *int) *TodoUpdate {
+	if i != nil {
+		tu.SetUserID(*i)
+	}
+	return tu
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (tu *TodoUpdate) ClearUserID() *TodoUpdate {
+	tu.mutation.ClearUserID()
+	return tu
+}
+
 // SetTitle sets the "title" field.
 func (tu *TodoUpdate) SetTitle(s string) *TodoUpdate {
 	tu.mutation.SetTitle(s)
@@ -63,20 +83,6 @@ func (tu *TodoUpdate) SetCreatedAt(t time.Time) *TodoUpdate {
 func (tu *TodoUpdate) SetNillableCreatedAt(t *time.Time) *TodoUpdate {
 	if t != nil {
 		tu.SetCreatedAt(*t)
-	}
-	return tu
-}
-
-// SetUserID sets the "user" edge to the User entity by ID.
-func (tu *TodoUpdate) SetUserID(id int) *TodoUpdate {
-	tu.mutation.SetUserID(id)
-	return tu
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (tu *TodoUpdate) SetNillableUserID(id *int) *TodoUpdate {
-	if id != nil {
-		tu = tu.SetUserID(*id)
 	}
 	return tu
 }
@@ -288,6 +294,26 @@ type TodoUpdateOne struct {
 	mutation *TodoMutation
 }
 
+// SetUserID sets the "user_id" field.
+func (tuo *TodoUpdateOne) SetUserID(i int) *TodoUpdateOne {
+	tuo.mutation.SetUserID(i)
+	return tuo
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (tuo *TodoUpdateOne) SetNillableUserID(i *int) *TodoUpdateOne {
+	if i != nil {
+		tuo.SetUserID(*i)
+	}
+	return tuo
+}
+
+// ClearUserID clears the value of the "user_id" field.
+func (tuo *TodoUpdateOne) ClearUserID() *TodoUpdateOne {
+	tuo.mutation.ClearUserID()
+	return tuo
+}
+
 // SetTitle sets the "title" field.
 func (tuo *TodoUpdateOne) SetTitle(s string) *TodoUpdateOne {
 	tuo.mutation.SetTitle(s)
@@ -322,20 +348,6 @@ func (tuo *TodoUpdateOne) SetCreatedAt(t time.Time) *TodoUpdateOne {
 func (tuo *TodoUpdateOne) SetNillableCreatedAt(t *time.Time) *TodoUpdateOne {
 	if t != nil {
 		tuo.SetCreatedAt(*t)
-	}
-	return tuo
-}
-
-// SetUserID sets the "user" edge to the User entity by ID.
-func (tuo *TodoUpdateOne) SetUserID(id int) *TodoUpdateOne {
-	tuo.mutation.SetUserID(id)
-	return tuo
-}
-
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (tuo *TodoUpdateOne) SetNillableUserID(id *int) *TodoUpdateOne {
-	if id != nil {
-		tuo = tuo.SetUserID(*id)
 	}
 	return tuo
 }

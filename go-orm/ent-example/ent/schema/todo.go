@@ -16,6 +16,8 @@ type Todo struct {
 // Fields of the Todo.
 func (Todo) Fields() []ent.Field {
 	return []ent.Field{
+		field.Int("user_id").
+			Optional(),
 		field.String("title").
 			MaxLen(100),
 		field.Text("description"),
@@ -34,6 +36,7 @@ func (Todo) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("user", User.Type).
 			Ref("todos").
+			Field("user_id").
 			Unique(),
 	}
 }
