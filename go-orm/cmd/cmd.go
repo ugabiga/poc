@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"go-orm/examples/ent_example"
+	"go-orm/examples/sqlboiler_example"
 	"go-orm/examples/sqlc_example"
 	"go-orm/internal"
 )
@@ -11,6 +12,7 @@ import (
 func init() {
 	rootCmd.AddCommand(entCmd)
 	rootCmd.AddCommand(sqlcCmd)
+	rootCmd.AddCommand(sqlboilerCmd)
 
 	rootCmd.AddCommand(migrateUpCmd)
 	rootCmd.AddCommand(migrateDownCmd)
@@ -25,6 +27,14 @@ var rootCmd = &cobra.Command{
 	Short: "Run example",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("root command")
+	},
+}
+
+var sqlboilerCmd = &cobra.Command{
+	Use:   "sqlboiler",
+	Short: "Run ent example",
+	Run: func(cmd *cobra.Command, args []string) {
+		sqlboiler_example.Run()
 	},
 }
 

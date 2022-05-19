@@ -11,7 +11,7 @@ import (
 
 func Run() {
 	ctx := context.Background()
-	conn, err := sql.Open(config.GetDatabaseURL())
+	conn, err := sql.Open(config.GetDBInfo())
 	internal.LogFatal(err)
 
 	query := db.New(conn)

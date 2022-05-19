@@ -11,6 +11,10 @@ func PrettyJson(v any) []byte {
 	return convertedJson
 }
 
+func PrintJSONLog(v any) {
+	log.Println(string(PrettyJson(v)))
+}
+
 func LogFatal(err error) {
 	if err != nil {
 		log.Fatal(err)

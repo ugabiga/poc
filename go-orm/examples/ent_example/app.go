@@ -48,20 +48,20 @@ func Run() {
 		SetLastName("park").
 		Save(ctx)
 	internal.LogFatal(err)
-	log.Println(newUser)
+	internal.PrintJSONLog(newUser)
 
 	newTodo, err := client.Todo.Create().
 		SetUser(newUser).
 		SetStatus(todo.StatusTodo).
 		SetTitle("buy a thing 1").
-		SetDescription("this is description").
+		SetDescription("buy a thing desc").
 		Save(ctx)
 	internal.LogFatal(err)
-	log.Println(newTodo)
+	internal.PrintJSONLog(newTodo)
 
 	userTodos, err := newUser.QueryTodos().All(ctx)
 	internal.LogFatal(err)
-	log.Println(userTodos)
+	internal.PrintJSONLog(userTodos)
 
 	//Eager loading
 	gotUser, err := client.User.Query().
@@ -69,15 +69,12 @@ func Run() {
 		WithTodos().
 		Only(ctx)
 	internal.LogFatal(err)
-	log.Println(gotUser)
-	for _, t := range gotUser.Edges.Todos {
-		log.Println(t)
-	}
-	log.Println(string(internal.PrettyJson(gotUser)))
+	internal.PrintJSONLog(gotUser)
+	internal.PrintJSONLog(gotUser.Edges.Todos)
 }
 
 func makeClient() *ent.Client {
-	client, err := ent.Open(config.GetDatabaseURL())
+	client, err := ent.Open(config.GetDBInfo())
 	internal.LogFatal(err)
 
 	return client

@@ -10,7 +10,7 @@ import (
 )
 
 func makeMigrate() *migrate.Migrate {
-	db, err := sql.Open(config.GetDatabaseURL())
+	db, err := sql.Open(config.GetDBInfo())
 	if err != nil {
 		log.Fatal(err)
 	}
