@@ -21,20 +21,24 @@ func makeMigrate() *migrate.Migrate {
 	}
 
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://ent-example/migrations",
+		"file://ent_example/migrations",
 		"postgres", driver)
 
 	return m
 }
 
 func UpMigration() {
+	log.Println("Start migrate up")
 	m := makeMigrate()
 	err := m.Up()
-	PanicErr(err)
+	LogFatal(err)
+	log.Println("Complete migrate up")
 }
 
 func DownMigration() {
+	log.Println("Start migrate down")
 	m := makeMigrate()
 	err := m.Down()
-	PanicErr(err)
+	LogFatal(err)
+	log.Println("Complete migrate down")
 }

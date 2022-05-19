@@ -5,7 +5,7 @@ package hook
 import (
 	"context"
 	"fmt"
-	"go-orm/ent-example/ent"
+	"go-orm/ent_example/ent"
 )
 
 // The TodoFunc type is an adapter to allow the use of ordinary

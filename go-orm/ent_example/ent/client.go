@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"log"
 
-	"go-orm/ent-example/ent/migrate"
+	"go-orm/ent_example/ent/migrate"
 
-	"go-orm/ent-example/ent/todo"
-	"go-orm/ent-example/ent/user"
+	"go-orm/ent_example/ent/todo"
+	"go-orm/ent_example/ent/user"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"

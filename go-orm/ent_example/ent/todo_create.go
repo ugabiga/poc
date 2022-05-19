@@ -6,8 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-orm/ent-example/ent/todo"
-	"go-orm/ent-example/ent/user"
+	"go-orm/ent_example/ent/todo"
+	"go-orm/ent_example/ent/user"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"

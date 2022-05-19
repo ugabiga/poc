@@ -3,7 +3,7 @@
 package user
 
 import (
-	"go-orm/ent-example/ent/predicate"
+	"go-orm/ent_example/ent/predicate"
 	"time"
 
 	"entgo.io/ent/dialect/sql"

@@ -4,9 +4,9 @@ package enttest
 
 import (
 	"context"
-	"go-orm/ent-example/ent"
+	"go-orm/ent_example/ent"
 	// required by schema hooks.
-	_ "go-orm/ent-example/ent/runtime"
+	_ "go-orm/ent_example/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
 )

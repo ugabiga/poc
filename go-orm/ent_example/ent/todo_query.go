@@ -5,9 +5,9 @@ package ent
 import (
 	"context"
 	"fmt"
-	"go-orm/ent-example/ent/predicate"
-	"go-orm/ent-example/ent/todo"
-	"go-orm/ent-example/ent/user"
+	"go-orm/ent_example/ent/predicate"
+	"go-orm/ent_example/ent/todo"
+	"go-orm/ent_example/ent/user"
 	"math"
 
 	"entgo.io/ent/dialect/sql"

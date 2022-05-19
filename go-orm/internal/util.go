@@ -1,15 +1,18 @@
 package internal
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"log"
+)
 
 func PrettyJson(v any) []byte {
 	convertedJson, err := json.MarshalIndent(v, "", "    ")
-	PanicErr(err)
+	LogFatal(err)
 	return convertedJson
 }
 
-func PanicErr(err error) {
+func LogFatal(err error) {
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }

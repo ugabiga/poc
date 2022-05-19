@@ -5,14 +5,13 @@ import (
 	"context"
 	"entgo.io/ent/dialect/sql/schema"
 	_ "github.com/lib/pq"
-	"go-orm/ent-example/ent/user"
+	"go-orm/ent_example/ent"
+	"go-orm/ent_example/ent/todo"
+	"go-orm/ent_example/ent/user"
 	"go-orm/internal"
 
 	"go-orm/config"
-	"go-orm/ent-example/ent/todo"
 	"log"
-
-	"go-orm/ent-example/ent"
 )
 
 func GenerateMigration() {
@@ -25,12 +24,12 @@ func GenerateMigration() {
 		}
 	}(client)
 
-	dir, err := migrate.NewLocalDir("ent-example/migrations")
-	internal.PanicErr(err)
+	dir, err := migrate.NewLocalDir("ent_example/migrations")
+	internal.LogFatal(err)
 
 	name := "init"
 	err = client.Schema.NamedDiff(ctx, name, schema.WithDir(dir))
-	internal.PanicErr(err)
+	internal.LogFatal(err)
 }
 
 func Run() {
@@ -48,7 +47,7 @@ func Run() {
 		SetFirstName("john").
 		SetLastName("park").
 		Save(ctx)
-	internal.PanicErr(err)
+	internal.LogFatal(err)
 	log.Println(newUser)
 
 	newTodo, err := client.Todo.Create().
@@ -57,11 +56,11 @@ func Run() {
 		SetTitle("buy a thing 1").
 		SetDescription("this is description").
 		Save(ctx)
-	internal.PanicErr(err)
+	internal.LogFatal(err)
 	log.Println(newTodo)
 
 	userTodos, err := newUser.QueryTodos().All(ctx)
-	internal.PanicErr(err)
+	internal.LogFatal(err)
 	log.Println(userTodos)
 
 	//Eager loading
@@ -69,7 +68,7 @@ func Run() {
 		Where(user.ID(newUser.ID)).
 		WithTodos().
 		Only(ctx)
-	internal.PanicErr(err)
+	internal.LogFatal(err)
 	log.Println(gotUser)
 	for _, t := range gotUser.Edges.Todos {
 		log.Println(t)
@@ -82,7 +81,7 @@ func makeClient() *ent.Client {
 		"postgres",
 		config.GetDBString(),
 	)
-	internal.PanicErr(err)
+	internal.LogFatal(err)
 
 	return client
 }

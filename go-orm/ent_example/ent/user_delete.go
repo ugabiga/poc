@@ -5,8 +5,8 @@ package ent
 import (
 	"context"
 	"fmt"
-	"go-orm/ent-example/ent/predicate"
-	"go-orm/ent-example/ent/user"
+	"go-orm/ent_example/ent/predicate"
+	"go-orm/ent_example/ent/user"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"

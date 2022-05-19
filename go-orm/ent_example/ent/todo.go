@@ -4,8 +4,8 @@ package ent
 
 import (
 	"fmt"
-	"go-orm/ent-example/ent/todo"
-	"go-orm/ent-example/ent/user"
+	"go-orm/ent_example/ent/todo"
+	"go-orm/ent_example/ent/user"
 	"strings"
 	"time"
 

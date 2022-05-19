@@ -3,9 +3,9 @@
 package ent
 
 import (
-	"go-orm/ent-example/ent/schema"
-	"go-orm/ent-example/ent/todo"
-	"go-orm/ent-example/ent/user"
+	"go-orm/ent_example/ent/schema"
+	"go-orm/ent_example/ent/todo"
+	"go-orm/ent_example/ent/user"
 	"time"
 )
 

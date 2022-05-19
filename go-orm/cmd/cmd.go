@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"go-orm/ent-example"
+	"go-orm/ent_example"
 	"go-orm/internal"
 
 	"github.com/spf13/cobra"
