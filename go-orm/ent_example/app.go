@@ -77,10 +77,7 @@ func Run() {
 }
 
 func makeClient() *ent.Client {
-	client, err := ent.Open(
-		"postgres",
-		config.GetDBString(),
-	)
+	client, err := ent.Open(config.GetDatabaseURL())
 	internal.LogFatal(err)
 
 	return client

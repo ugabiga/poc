@@ -10,7 +10,7 @@ import (
 )
 
 func makeMigrate() *migrate.Migrate {
-	db, err := sql.Open("postgres", config.GetDBString())
+	db, err := sql.Open(config.GetDatabaseURL())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -20,8 +20,11 @@ func makeMigrate() *migrate.Migrate {
 		log.Fatal(err)
 	}
 
+	//entMigrationPath := "file://ent_example/migrations"
+	sqlcMigrationPath := "file://sqlc_example/db/migrations"
+
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://ent_example/migrations",
+		sqlcMigrationPath,
 		"postgres", driver)
 
 	return m
