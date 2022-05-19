@@ -1,4 +1,4 @@
-ent-gen:
+gen-ent:
 	@go generate ./ent-example/ent
 
 run-ent:
