@@ -56,7 +56,7 @@ var entCmd = &cobra.Command{
 
 var entMigrateCmd = &cobra.Command{
 	Use:   "migrate",
-	Short: "Run ent migration",
+	Short: "Generate migration from ent",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("migrate")
 	},
@@ -64,7 +64,7 @@ var entMigrateCmd = &cobra.Command{
 
 var entMigrateGenerateCmd = &cobra.Command{
 	Use:   "generate",
-	Short: "Generate ent migration",
+	Short: "Generate migration from ent",
 	Run: func(cmd *cobra.Command, args []string) {
 		ent_example.GenerateMigration()
 	},
@@ -72,7 +72,7 @@ var entMigrateGenerateCmd = &cobra.Command{
 
 var migrateUpCmd = &cobra.Command{
 	Use:   "up",
-	Short: "Process up migration",
+	Short: "Process migration up",
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.UpMigration()
 	},
@@ -80,7 +80,7 @@ var migrateUpCmd = &cobra.Command{
 
 var migrateDownCmd = &cobra.Command{
 	Use:   "down",
-	Short: "Process down migration",
+	Short: "Process migration down",
 	Run: func(cmd *cobra.Command, args []string) {
 		internal.DownMigration()
 	},
