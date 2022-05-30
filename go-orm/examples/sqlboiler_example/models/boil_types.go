@@ -51,32 +51,62 @@ func makeCacheKey(cols boil.Columns, nzDefaults []string) string {
 	return str
 }
 
-type Status string
+type ProjectStatus string
 
-// Enum values for Status
+// Enum values for ProjectStatus
 const (
-	StatusTodo       Status = "todo"
-	StatusInProgress Status = "in_progress"
-	StatusDone       Status = "done"
+	ProjectStatusTodo       ProjectStatus = "todo"
+	ProjectStatusInProgress ProjectStatus = "in_progress"
+	ProjectStatusDone       ProjectStatus = "done"
 )
 
-func AllStatus() []Status {
-	return []Status{
-		StatusTodo,
-		StatusInProgress,
-		StatusDone,
+func AllProjectStatus() []ProjectStatus {
+	return []ProjectStatus{
+		ProjectStatusTodo,
+		ProjectStatusInProgress,
+		ProjectStatusDone,
 	}
 }
 
-func (e Status) IsValid() error {
+func (e ProjectStatus) IsValid() error {
 	switch e {
-	case StatusTodo, StatusInProgress, StatusDone:
+	case ProjectStatusTodo, ProjectStatusInProgress, ProjectStatusDone:
 		return nil
 	default:
 		return errors.New("enum is not valid")
 	}
 }
 
-func (e Status) String() string {
+func (e ProjectStatus) String() string {
+	return string(e)
+}
+
+type TaskStatus string
+
+// Enum values for TaskStatus
+const (
+	TaskStatusTodo       TaskStatus = "todo"
+	TaskStatusInProgress TaskStatus = "in_progress"
+	TaskStatusDone       TaskStatus = "done"
+)
+
+func AllTaskStatus() []TaskStatus {
+	return []TaskStatus{
+		TaskStatusTodo,
+		TaskStatusInProgress,
+		TaskStatusDone,
+	}
+}
+
+func (e TaskStatus) IsValid() error {
+	switch e {
+	case TaskStatusTodo, TaskStatusInProgress, TaskStatusDone:
+		return nil
+	default:
+		return errors.New("enum is not valid")
+	}
+}
+
+func (e TaskStatus) String() string {
 	return string(e)
 }

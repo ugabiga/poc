@@ -25,18 +25,49 @@ func Run() {
 	internal.LogFatal(err)
 	internal.PrintJSONLog(newUser)
 
-	newTodo := &models.Todo{
-		Title:       "buy a thing 1",
-		Description: "buy a thing desc",
-		Status:      models.StatusTodo,
-		UserID:      null.Int64{Int64: newUser.ID, Valid: true},
+	newTask := &models.Task{
+		Title:  "but a thing 1",
+		Note:   "",
+		Status: models.TaskStatusTodo,
+		UserID: null.Int64{Int64: newUser.ID, Valid: true},
 	}
-	err = newTodo.Insert(ctx, conn, boil.Infer())
-	internal.LogFatal(err)
-	internal.PrintJSONLog(newTodo)
+	err = newTask.Insert(ctx, conn, boil.Infer())
 
-	gotUser, err := models.Users(qm.Load("Todos")).One(ctx, conn)
+	internal.LogFatal(err)
+	internal.PrintJSONLog(newTask)
+
+	gotUser, err := models.Users(qm.Load("Tasks")).One(ctx, conn)
 	internal.LogFatal(err)
 	internal.PrintJSONLog(gotUser)
-	internal.PrintJSONLog(gotUser.R.Todos)
+	internal.PrintJSONLog(gotUser.R.Tasks)
+
+	newProject := &models.Project{
+		Title:       "project 1",
+		Description: "project 1 description",
+		Status:      models.ProjectStatusTodo,
+	}
+	err = newProject.Insert(ctx, conn, boil.Infer())
+	internal.LogFatal(err)
+	internal.PrintJSONLog(newProject)
+
+	newProjectTask := &models.ProjectTask{
+		ProjectID: newProject.ID,
+		TaskID:    newTask.ID,
+	}
+	err = newProjectTask.Insert(ctx, conn, boil.Infer())
+	internal.LogFatal(err)
+	internal.PrintJSONLog(newProjectTask)
+
+	gotProject, err := models.Projects(
+		qm.Where("id = ?", newProject.ID),
+		qm.Load("ProjectTasks"),
+		qm.Load("ProjectTasks.Task"),
+		qm.Load("ProjectTasks.Task.User"),
+	).One(ctx, conn)
+	internal.LogFatal(err)
+	internal.PrintJSONLog(gotProject)
+	internal.PrintJSONLog(gotProject.R.ProjectTasks)
+	internal.PrintJSONLog(gotProject.R.ProjectTasks[0])
+	internal.PrintJSONLog(gotProject.R.ProjectTasks[0].R.Task)
+	internal.PrintJSONLog(gotProject.R.ProjectTasks[0].R.Task.R.User)
 }

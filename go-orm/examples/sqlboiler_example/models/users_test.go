@@ -494,14 +494,14 @@ func testUsersInsertWhitelist(t *testing.T) {
 	}
 }
 
-func testUserToManyTodos(t *testing.T) {
+func testUserToManyTasks(t *testing.T) {
 	var err error
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
 	var a User
-	var b, c Todo
+	var b, c Task
 
 	seed := randomize.NewSeed()
 	if err = randomize.Struct(seed, &a, userDBTypes, true, userColumnsWithDefault...); err != nil {
@@ -512,10 +512,10 @@ func testUserToManyTodos(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = randomize.Struct(seed, &b, todoDBTypes, false, todoColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &b, taskDBTypes, false, taskColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
-	if err = randomize.Struct(seed, &c, todoDBTypes, false, todoColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &c, taskDBTypes, false, taskColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
 
@@ -528,7 +528,7 @@ func testUserToManyTodos(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	check, err := a.Todos().All(ctx, tx)
+	check, err := a.Tasks().All(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -551,18 +551,18 @@ func testUserToManyTodos(t *testing.T) {
 	}
 
 	slice := UserSlice{&a}
-	if err = a.L.LoadTodos(ctx, tx, false, (*[]*User)(&slice), nil); err != nil {
+	if err = a.L.LoadTasks(ctx, tx, false, (*[]*User)(&slice), nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.Todos); got != 2 {
+	if got := len(a.R.Tasks); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
-	a.R.Todos = nil
-	if err = a.L.LoadTodos(ctx, tx, true, &a, nil); err != nil {
+	a.R.Tasks = nil
+	if err = a.L.LoadTasks(ctx, tx, true, &a, nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.Todos); got != 2 {
+	if got := len(a.R.Tasks); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
@@ -571,7 +571,7 @@ func testUserToManyTodos(t *testing.T) {
 	}
 }
 
-func testUserToManyAddOpTodos(t *testing.T) {
+func testUserToManyAddOpTasks(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
@@ -579,15 +579,15 @@ func testUserToManyAddOpTodos(t *testing.T) {
 	defer func() { _ = tx.Rollback() }()
 
 	var a User
-	var b, c, d, e Todo
+	var b, c, d, e Task
 
 	seed := randomize.NewSeed()
 	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*Todo{&b, &c, &d, &e}
+	foreigners := []*Task{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, todoDBTypes, false, strmangle.SetComplement(todoPrimaryKeyColumns, todoColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, taskDBTypes, false, strmangle.SetComplement(taskPrimaryKeyColumns, taskColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -602,13 +602,13 @@ func testUserToManyAddOpTodos(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	foreignersSplitByInsertion := [][]*Todo{
+	foreignersSplitByInsertion := [][]*Task{
 		{&b, &c},
 		{&d, &e},
 	}
 
 	for i, x := range foreignersSplitByInsertion {
-		err = a.AddTodos(ctx, tx, i != 0, x...)
+		err = a.AddTasks(ctx, tx, i != 0, x...)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -630,14 +630,14 @@ func testUserToManyAddOpTodos(t *testing.T) {
 			t.Error("relationship was not added properly to the foreign slice")
 		}
 
-		if a.R.Todos[i*2] != first {
+		if a.R.Tasks[i*2] != first {
 			t.Error("relationship struct slice not set to correct value")
 		}
-		if a.R.Todos[i*2+1] != second {
+		if a.R.Tasks[i*2+1] != second {
 			t.Error("relationship struct slice not set to correct value")
 		}
 
-		count, err := a.Todos().Count(ctx, tx)
+		count, err := a.Tasks().Count(ctx, tx)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -647,7 +647,7 @@ func testUserToManyAddOpTodos(t *testing.T) {
 	}
 }
 
-func testUserToManySetOpTodos(t *testing.T) {
+func testUserToManySetOpTasks(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
@@ -655,15 +655,15 @@ func testUserToManySetOpTodos(t *testing.T) {
 	defer func() { _ = tx.Rollback() }()
 
 	var a User
-	var b, c, d, e Todo
+	var b, c, d, e Task
 
 	seed := randomize.NewSeed()
 	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*Todo{&b, &c, &d, &e}
+	foreigners := []*Task{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, todoDBTypes, false, strmangle.SetComplement(todoPrimaryKeyColumns, todoColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, taskDBTypes, false, strmangle.SetComplement(taskPrimaryKeyColumns, taskColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -678,12 +678,12 @@ func testUserToManySetOpTodos(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = a.SetTodos(ctx, tx, false, &b, &c)
+	err = a.SetTasks(ctx, tx, false, &b, &c)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err := a.Todos().Count(ctx, tx)
+	count, err := a.Tasks().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -691,12 +691,12 @@ func testUserToManySetOpTodos(t *testing.T) {
 		t.Error("count was wrong:", count)
 	}
 
-	err = a.SetTodos(ctx, tx, true, &d, &e)
+	err = a.SetTasks(ctx, tx, true, &d, &e)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err = a.Todos().Count(ctx, tx)
+	count, err = a.Tasks().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -730,15 +730,15 @@ func testUserToManySetOpTodos(t *testing.T) {
 		t.Error("relationship was not added properly to the foreign struct")
 	}
 
-	if a.R.Todos[0] != &d {
+	if a.R.Tasks[0] != &d {
 		t.Error("relationship struct slice not set to correct value")
 	}
-	if a.R.Todos[1] != &e {
+	if a.R.Tasks[1] != &e {
 		t.Error("relationship struct slice not set to correct value")
 	}
 }
 
-func testUserToManyRemoveOpTodos(t *testing.T) {
+func testUserToManyRemoveOpTasks(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
@@ -746,15 +746,15 @@ func testUserToManyRemoveOpTodos(t *testing.T) {
 	defer func() { _ = tx.Rollback() }()
 
 	var a User
-	var b, c, d, e Todo
+	var b, c, d, e Task
 
 	seed := randomize.NewSeed()
 	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*Todo{&b, &c, &d, &e}
+	foreigners := []*Task{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, todoDBTypes, false, strmangle.SetComplement(todoPrimaryKeyColumns, todoColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, taskDBTypes, false, strmangle.SetComplement(taskPrimaryKeyColumns, taskColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -763,12 +763,12 @@ func testUserToManyRemoveOpTodos(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	err = a.AddTodos(ctx, tx, true, foreigners...)
+	err = a.AddTasks(ctx, tx, true, foreigners...)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err := a.Todos().Count(ctx, tx)
+	count, err := a.Tasks().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -776,12 +776,12 @@ func testUserToManyRemoveOpTodos(t *testing.T) {
 		t.Error("count was wrong:", count)
 	}
 
-	err = a.RemoveTodos(ctx, tx, foreigners[:2]...)
+	err = a.RemoveTasks(ctx, tx, foreigners[:2]...)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	count, err = a.Todos().Count(ctx, tx)
+	count, err = a.Tasks().Count(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -809,15 +809,15 @@ func testUserToManyRemoveOpTodos(t *testing.T) {
 		t.Error("relationship to a should have been preserved")
 	}
 
-	if len(a.R.Todos) != 2 {
+	if len(a.R.Tasks) != 2 {
 		t.Error("should have preserved two relationships")
 	}
 
 	// Removal doesn't do a stable deletion for performance so we have to flip the order
-	if a.R.Todos[1] != &d {
+	if a.R.Tasks[1] != &d {
 		t.Error("relationship to d should have been preserved")
 	}
-	if a.R.Todos[0] != &e {
+	if a.R.Tasks[0] != &e {
 		t.Error("relationship to e should have been preserved")
 	}
 }
@@ -896,7 +896,7 @@ func testUsersSelect(t *testing.T) {
 }
 
 var (
-	userDBTypes = map[string]string{`ID`: `bigint`, `FirstName`: `character varying`, `LastName`: `character varying`, `UpdatedAt`: `timestamp with time zone`, `CreatedAt`: `timestamp with time zone`}
+	userDBTypes = map[string]string{`ID`: `bigint`, `FirstName`: `character varying`, `LastName`: `character varying`, `Birthday`: `timestamp without time zone`, `UpdatedAt`: `timestamp with time zone`, `CreatedAt`: `timestamp with time zone`}
 	_           = bytes.MinRead
 )
 
