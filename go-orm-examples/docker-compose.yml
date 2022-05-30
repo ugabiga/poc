@@ -4,7 +4,7 @@ services:
     container_name: postgres
     image: postgres
     volumes:
-      - go-orm-pg-data:/var/lib/go-orm-postgresql/data
+      - go-orm-examples-pg-data:/var/lib/go-orm-examples-postgresql/data
     environment:
       POSTGRES_USER: 'user'
       POSTGRES_PASSWORD: 'pass'
