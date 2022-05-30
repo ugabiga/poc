@@ -21,10 +21,11 @@ func makeMigrate() *migrate.Migrate {
 	}
 
 	//entMigrationPath := "file://examples/ent_example/migrations"
-	sqlcMigrationPath := "file://examples/sqlc_example/db/migrations"
+	//sqlcMigrationPath := "file://examples/sqlc_example/db/migrations"
+	sqlboilerMigrationPath := "file://examples/sqlboiler_example/migrations"
 
 	m, err := migrate.NewWithDatabaseInstance(
-		sqlcMigrationPath,
+		sqlboilerMigrationPath,
 		"postgres", driver)
 
 	return m
