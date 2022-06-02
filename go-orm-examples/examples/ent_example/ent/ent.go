@@ -6,7 +6,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"go-orm/examples/ent_example/ent/todo"
+	"go-orm/examples/ent_example/ent/project"
+	"go-orm/examples/ent_example/ent/task"
 	"go-orm/examples/ent_example/ent/user"
 
 	"entgo.io/ent"
@@ -32,8 +33,9 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		todo.Table: todo.ValidColumn,
-		user.Table: user.ValidColumn,
+		project.Table: project.ValidColumn,
+		task.Table:    task.ValidColumn,
+		user.Table:    user.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

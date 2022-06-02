@@ -15,21 +15,23 @@ const (
 	FieldFirstName = "first_name"
 	// FieldLastName holds the string denoting the last_name field in the database.
 	FieldLastName = "last_name"
+	// FieldBirthday holds the string denoting the birthday field in the database.
+	FieldBirthday = "birthday"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgeTodos holds the string denoting the todos edge name in mutations.
-	EdgeTodos = "todos"
+	// EdgeTasks holds the string denoting the tasks edge name in mutations.
+	EdgeTasks = "tasks"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// TodosTable is the table that holds the todos relation/edge.
-	TodosTable = "todos"
-	// TodosInverseTable is the table name for the Todo entity.
-	// It exists in this package in order to avoid circular dependency with the "todo" package.
-	TodosInverseTable = "todos"
-	// TodosColumn is the table column denoting the todos relation/edge.
-	TodosColumn = "user_id"
+	// TasksTable is the table that holds the tasks relation/edge.
+	TasksTable = "tasks"
+	// TasksInverseTable is the table name for the Task entity.
+	// It exists in this package in order to avoid circular dependency with the "task" package.
+	TasksInverseTable = "tasks"
+	// TasksColumn is the table column denoting the tasks relation/edge.
+	TasksColumn = "user_tasks"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -37,6 +39,7 @@ var Columns = []string{
 	FieldID,
 	FieldFirstName,
 	FieldLastName,
+	FieldBirthday,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }

@@ -3,8 +3,8 @@ module go-orm
 go 1.18
 
 require (
-	ariga.io/atlas v0.4.2-0.20220524161107-b5b3f75b1034
-	entgo.io/ent v0.10.2-0.20220529132352-5b81d7d832c9
+	ariga.io/atlas v0.4.2-0.20220601084524-93e29909973c
+	entgo.io/ent v0.10.2-0.20220601155507-2c3f65b5282c
 	github.com/bxcodec/faker/v3 v3.8.0
 	github.com/friendsofgo/errors v0.9.2
 	github.com/golang-migrate/migrate/v4 v4.15.2

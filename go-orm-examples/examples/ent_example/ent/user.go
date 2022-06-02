@@ -20,6 +20,8 @@ type User struct {
 	FirstName string `json:"first_name,omitempty"`
 	// LastName holds the value of the "last_name" field.
 	LastName string `json:"last_name,omitempty"`
+	// Birthday holds the value of the "birthday" field.
+	Birthday time.Time `json:"birthday,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -31,20 +33,20 @@ type User struct {
 
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
-	// Todos holds the value of the todos edge.
-	Todos []*Todo `json:"todos,omitempty"`
+	// Tasks holds the value of the tasks edge.
+	Tasks []*Task `json:"tasks,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// TodosOrErr returns the Todos value or an error if the edge
+// TasksOrErr returns the Tasks value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) TodosOrErr() ([]*Todo, error) {
+func (e UserEdges) TasksOrErr() ([]*Task, error) {
 	if e.loadedTypes[0] {
-		return e.Todos, nil
+		return e.Tasks, nil
 	}
-	return nil, &NotLoadedError{edge: "todos"}
+	return nil, &NotLoadedError{edge: "tasks"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -56,7 +58,7 @@ func (*User) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case user.FieldFirstName, user.FieldLastName:
 			values[i] = new(sql.NullString)
-		case user.FieldUpdatedAt, user.FieldCreatedAt:
+		case user.FieldBirthday, user.FieldUpdatedAt, user.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type User", columns[i])
@@ -91,6 +93,12 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				u.LastName = value.String
 			}
+		case user.FieldBirthday:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field birthday", values[i])
+			} else if value.Valid {
+				u.Birthday = value.Time
+			}
 		case user.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
@@ -108,9 +116,9 @@ func (u *User) assignValues(columns []string, values []interface{}) error {
 	return nil
 }
 
-// QueryTodos queries the "todos" edge of the User entity.
-func (u *User) QueryTodos() *TodoQuery {
-	return (&UserClient{config: u.config}).QueryTodos(u)
+// QueryTasks queries the "tasks" edge of the User entity.
+func (u *User) QueryTasks() *TaskQuery {
+	return (&UserClient{config: u.config}).QueryTasks(u)
 }
 
 // Update returns a builder for updating this User.
@@ -135,14 +143,20 @@ func (u *User) Unwrap() *User {
 func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
-	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
-	builder.WriteString(", first_name=")
+	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
+	builder.WriteString("first_name=")
 	builder.WriteString(u.FirstName)
-	builder.WriteString(", last_name=")
+	builder.WriteString(", ")
+	builder.WriteString("last_name=")
 	builder.WriteString(u.LastName)
-	builder.WriteString(", updated_at=")
+	builder.WriteString(", ")
+	builder.WriteString("birthday=")
+	builder.WriteString(u.Birthday.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
 	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
-	builder.WriteString(", created_at=")
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
 	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()

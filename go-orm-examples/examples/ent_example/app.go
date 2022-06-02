@@ -6,8 +6,6 @@ import (
 	"entgo.io/ent/dialect/sql/schema"
 	_ "github.com/lib/pq"
 	"go-orm/examples/ent_example/ent"
-	"go-orm/examples/ent_example/ent/todo"
-	"go-orm/examples/ent_example/ent/user"
 	"go-orm/internal"
 
 	"go-orm/config"
@@ -24,7 +22,7 @@ func GenerateMigration() {
 		}
 	}(client)
 
-	dir, err := migrate.NewLocalDir("ent_example/migrations")
+	dir, err := migrate.NewLocalDir("examples/ent_example/migrations")
 	internal.LogFatal(err)
 
 	name := "init"
@@ -33,7 +31,7 @@ func GenerateMigration() {
 }
 
 func Run() {
-	ctx := context.Background()
+	_ = context.Background()
 	client := makeClient()
 	defer func(client *ent.Client) {
 		err := client.Close()
@@ -41,36 +39,36 @@ func Run() {
 			log.Fatal(err)
 		}
 	}(client)
-
-	newUser, err := client.User.
-		Create().
-		SetFirstName("john").
-		SetLastName("park").
-		Save(ctx)
-	internal.LogFatal(err)
-	internal.PrintJSONLog(newUser)
-
-	newTodo, err := client.Todo.Create().
-		SetUser(newUser).
-		SetStatus(todo.StatusTodo).
-		SetTitle("buy a thing 1").
-		SetDescription("buy a thing desc").
-		Save(ctx)
-	internal.LogFatal(err)
-	internal.PrintJSONLog(newTodo)
-
-	userTodos, err := newUser.QueryTodos().All(ctx)
-	internal.LogFatal(err)
-	internal.PrintJSONLog(userTodos)
-
-	//Eager loading
-	gotUser, err := client.User.Query().
-		Where(user.ID(newUser.ID)).
-		WithTodos().
-		Only(ctx)
-	internal.LogFatal(err)
-	internal.PrintJSONLog(gotUser)
-	internal.PrintJSONLog(gotUser.Edges.Todos)
+	//
+	//newUser, err := client.User.
+	//	Create().
+	//	SetFirstName("john").
+	//	SetLastName("park").
+	//	Save(ctx)
+	//internal.LogFatal(err)
+	//internal.PrintJSONLog(newUser)
+	//
+	//newTodo, err := client.Todo.Create().
+	//	SetUser(newUser).
+	//	SetStatus(todo.StatusTodo).
+	//	SetTitle("buy a thing 1").
+	//	SetDescription("buy a thing desc").
+	//	Save(ctx)
+	//internal.LogFatal(err)
+	//internal.PrintJSONLog(newTodo)
+	//
+	//userTodos, err := newUser.QueryTodos().All(ctx)
+	//internal.LogFatal(err)
+	//internal.PrintJSONLog(userTodos)
+	//
+	////Eager loading
+	//gotUser, err := client.User.Query().
+	//	Where(user.ID(newUser.ID)).
+	//	WithTodos().
+	//	Only(ctx)
+	//internal.LogFatal(err)
+	//internal.PrintJSONLog(gotUser)
+	//internal.PrintJSONLog(gotUser.Edges.Todos)
 }
 
 func makeClient() *ent.Client {

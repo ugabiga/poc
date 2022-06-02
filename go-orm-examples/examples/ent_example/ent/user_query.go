@@ -7,7 +7,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"go-orm/examples/ent_example/ent/predicate"
-	"go-orm/examples/ent_example/ent/todo"
+	"go-orm/examples/ent_example/ent/task"
 	"go-orm/examples/ent_example/ent/user"
 	"math"
 
@@ -26,7 +26,7 @@ type UserQuery struct {
 	fields     []string
 	predicates []predicate.User
 	// eager-loading edges.
-	withTodos *TodoQuery
+	withTasks *TaskQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -63,9 +63,9 @@ func (uq *UserQuery) Order(o ...OrderFunc) *UserQuery {
 	return uq
 }
 
-// QueryTodos chains the current query on the "todos" edge.
-func (uq *UserQuery) QueryTodos() *TodoQuery {
-	query := &TodoQuery{config: uq.config}
+// QueryTasks chains the current query on the "tasks" edge.
+func (uq *UserQuery) QueryTasks() *TaskQuery {
+	query := &TaskQuery{config: uq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -76,8 +76,8 @@ func (uq *UserQuery) QueryTodos() *TodoQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(todo.Table, todo.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.TodosTable, user.TodosColumn),
+			sqlgraph.To(task.Table, task.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.TasksTable, user.TasksColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -266,7 +266,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		offset:     uq.offset,
 		order:      append([]OrderFunc{}, uq.order...),
 		predicates: append([]predicate.User{}, uq.predicates...),
-		withTodos:  uq.withTodos.Clone(),
+		withTasks:  uq.withTasks.Clone(),
 		// clone intermediate query.
 		sql:    uq.sql.Clone(),
 		path:   uq.path,
@@ -274,14 +274,14 @@ func (uq *UserQuery) Clone() *UserQuery {
 	}
 }
 
-// WithTodos tells the query-builder to eager-load the nodes that are connected to
-// the "todos" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithTodos(opts ...func(*TodoQuery)) *UserQuery {
-	query := &TodoQuery{config: uq.config}
+// WithTasks tells the query-builder to eager-load the nodes that are connected to
+// the "tasks" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithTasks(opts ...func(*TaskQuery)) *UserQuery {
+	query := &TaskQuery{config: uq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withTodos = query
+	uq.withTasks = query
 	return uq
 }
 
@@ -356,7 +356,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
 		loadedTypes = [1]bool{
-			uq.withTodos != nil,
+			uq.withTasks != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
@@ -378,28 +378,32 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		return nodes, nil
 	}
 
-	if query := uq.withTodos; query != nil {
+	if query := uq.withTasks; query != nil {
 		fks := make([]driver.Value, 0, len(nodes))
 		nodeids := make(map[int]*User)
 		for i := range nodes {
 			fks = append(fks, nodes[i].ID)
 			nodeids[nodes[i].ID] = nodes[i]
-			nodes[i].Edges.Todos = []*Todo{}
+			nodes[i].Edges.Tasks = []*Task{}
 		}
-		query.Where(predicate.Todo(func(s *sql.Selector) {
-			s.Where(sql.InValues(user.TodosColumn, fks...))
+		query.withFKs = true
+		query.Where(predicate.Task(func(s *sql.Selector) {
+			s.Where(sql.InValues(user.TasksColumn, fks...))
 		}))
 		neighbors, err := query.All(ctx)
 		if err != nil {
 			return nil, err
 		}
 		for _, n := range neighbors {
-			fk := n.UserID
-			node, ok := nodeids[fk]
-			if !ok {
-				return nil, fmt.Errorf(`unexpected foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			fk := n.user_tasks
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "user_tasks" is nil for node %v`, n.ID)
 			}
-			node.Edges.Todos = append(node.Edges.Todos, n)
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "user_tasks" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Tasks = append(node.Edges.Tasks, n)
 		}
 	}
 

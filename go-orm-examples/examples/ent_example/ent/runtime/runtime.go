@@ -2,9 +2,9 @@
 
 package runtime
 
-// The schema-stitching logic is generated in go-orm-examples/examples/ent_example/ent/runtime.go
+// The schema-stitching logic is generated in go-orm/examples/ent_example/ent/runtime.go
 
 const (
-	Version = "v0.10.2-0.20220512043615-f2e0bef7a803"           // Version of ent codegen.
-	Sum     = "h1:hlVxT7O3OxI9uLvDIaIdNMCNaQ6aIspzdXzbnuJ1TXs=" // Sum of ent codegen.
+	Version = "v0.10.2-0.20220601155507-2c3f65b5282c"           // Version of ent codegen.
+	Sum     = "h1:xf2A/DjPfCHaYICTHgAggApJ4w+tvbUnjpylG9IOHdE=" // Sum of ent codegen.
 )
