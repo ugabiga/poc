@@ -6,6 +6,9 @@ import (
 	"entgo.io/ent/dialect/sql/schema"
 	_ "github.com/lib/pq"
 	"go-orm/examples/ent_example/ent"
+	"go-orm/examples/ent_example/ent/project"
+	"go-orm/examples/ent_example/ent/task"
+	"go-orm/examples/ent_example/ent/user"
 	"go-orm/internal"
 
 	"go-orm/config"
@@ -31,7 +34,7 @@ func GenerateMigration() {
 }
 
 func Run() {
-	_ = context.Background()
+	ctx := context.Background()
 	client := makeClient()
 	defer func(client *ent.Client) {
 		err := client.Close()
@@ -39,36 +42,47 @@ func Run() {
 			log.Fatal(err)
 		}
 	}(client)
-	//
-	//newUser, err := client.User.
-	//	Create().
-	//	SetFirstName("john").
-	//	SetLastName("park").
-	//	Save(ctx)
-	//internal.LogFatal(err)
-	//internal.PrintJSONLog(newUser)
-	//
-	//newTodo, err := client.Todo.Create().
-	//	SetUser(newUser).
-	//	SetStatus(todo.StatusTodo).
-	//	SetTitle("buy a thing 1").
-	//	SetDescription("buy a thing desc").
-	//	Save(ctx)
-	//internal.LogFatal(err)
-	//internal.PrintJSONLog(newTodo)
-	//
-	//userTodos, err := newUser.QueryTodos().All(ctx)
-	//internal.LogFatal(err)
-	//internal.PrintJSONLog(userTodos)
-	//
-	////Eager loading
-	//gotUser, err := client.User.Query().
-	//	Where(user.ID(newUser.ID)).
-	//	WithTodos().
-	//	Only(ctx)
-	//internal.LogFatal(err)
-	//internal.PrintJSONLog(gotUser)
-	//internal.PrintJSONLog(gotUser.Edges.Todos)
+
+	newUser, err := client.User.
+		Create().
+		SetFirstName("john").
+		SetLastName("park").
+		Save(ctx)
+	internal.LogFatal(err)
+	internal.PrintJSONLog(newUser)
+
+	newTask, err := client.Task.Create().
+		SetTitle("buy a ting 1").
+		SetNote("").
+		SetStatus(task.StatusTodo).
+		SetUser(newUser).
+		Save(ctx)
+	internal.LogFatal(err)
+	internal.PrintJSONLog(newTask)
+
+	gotUser, err := client.User.Query().
+		Where(user.IDEQ(newUser.ID)).
+		Only(ctx)
+	internal.LogFatal(err)
+	internal.PrintJSONLog(gotUser)
+
+	newProject, err := client.Project.Create().
+		SetTitle("project 1").
+		SetDescription("project 1").
+		SetStatus(project.StatusTodo).
+		AddTasks(newTask).
+		Save(ctx)
+	internal.LogFatal(err)
+	internal.PrintJSONLog(newProject)
+
+	gotProject, err := client.Project.Query().
+		Where(project.ID(newProject.ID)).
+		WithTasks(func(query *ent.TaskQuery) {
+			query.WithUser()
+		}).
+		Only(ctx)
+	internal.LogFatal(err)
+	internal.PrintJSONLog(gotProject)
 }
 
 func makeClient() *ent.Client {

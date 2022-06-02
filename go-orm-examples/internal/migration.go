@@ -20,12 +20,12 @@ func makeMigrate() *migrate.Migrate {
 		log.Fatal(err)
 	}
 
-	//entMigrationPath := "file://examples/ent_example/migrations"
+	entMigrationPath := "file://examples/ent_example/migrations"
 	//sqlcMigrationPath := "file://examples/sqlc_example/db/migrations"
-	sqlboilerMigrationPath := "file://examples/sqlboiler_example/migrations"
+	//sqlboilerMigrationPath := "file://examples/sqlboiler_example/migrations"
 
 	m, err := migrate.NewWithDatabaseInstance(
-		sqlboilerMigrationPath,
+		entMigrationPath,
 		"postgres", driver)
 
 	return m
