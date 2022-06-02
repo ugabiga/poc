@@ -3,6 +3,7 @@ package ent_example
 import (
 	"ariga.io/atlas/sql/migrate"
 	"context"
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/bxcodec/faker/v3"
 	_ "github.com/lib/pq"
@@ -86,6 +87,25 @@ func Run() {
 		Only(ctx)
 	internal.LogFatal(err)
 	internal.PrintJSONLog(gotProject)
+
+	var v []struct {
+		UserTasks int `json:"user_tasks"`
+		Count     int `json:"count"`
+	}
+	err = client.Task.Query().
+		Where(
+			task.HasUserWith(
+				user.IDGTE(5),
+			),
+		).
+		Order(func(s *sql.Selector) {
+			s.OrderBy(sql.Desc("count"))
+		}).
+		GroupBy(task.UserColumn).
+		Aggregate(ent.Count()).
+		Scan(ctx, &v)
+	internal.LogFatal(err)
+	internal.PrintJSONLog(v)
 }
 
 func Seed(userCount int, taskCount int) {
