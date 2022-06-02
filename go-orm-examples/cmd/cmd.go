@@ -20,6 +20,7 @@ func init() {
 	sqlboilerCmd.AddCommand(sqlboilerSeedCmd)
 
 	entCmd.AddCommand(entMigrateCmd)
+	entCmd.AddCommand(entSeedCmd)
 
 	entMigrateCmd.AddCommand(entMigrateGenerateCmd)
 }
@@ -77,6 +78,14 @@ var entMigrateGenerateCmd = &cobra.Command{
 	Short: "Generate migration from ent",
 	Run: func(cmd *cobra.Command, args []string) {
 		ent_example.GenerateMigration()
+	},
+}
+
+var entSeedCmd = &cobra.Command{
+	Use:   "seed",
+	Short: "Run ent seeder",
+	Run: func(cmd *cobra.Command, args []string) {
+		ent_example.Seed(100, 100)
 	},
 }
 

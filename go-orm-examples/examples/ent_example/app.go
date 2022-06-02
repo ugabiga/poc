@@ -4,12 +4,15 @@ import (
 	"ariga.io/atlas/sql/migrate"
 	"context"
 	"entgo.io/ent/dialect/sql/schema"
+	"github.com/bxcodec/faker/v3"
 	_ "github.com/lib/pq"
 	"go-orm/examples/ent_example/ent"
 	"go-orm/examples/ent_example/ent/project"
 	"go-orm/examples/ent_example/ent/task"
 	"go-orm/examples/ent_example/ent/user"
 	"go-orm/internal"
+	"math/rand"
+	"time"
 
 	"go-orm/config"
 	"log"
@@ -83,6 +86,55 @@ func Run() {
 		Only(ctx)
 	internal.LogFatal(err)
 	internal.PrintJSONLog(gotProject)
+}
+
+func Seed(userCount int, taskCount int) {
+	ctx := context.Background()
+	client := makeClient()
+	defer func(client *ent.Client) {
+		err := client.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(client)
+
+	users := seedUsers(ctx, client, userCount)
+	tasks := seedTasks(ctx, client, users, taskCount)
+	internal.PrintJSONLog(users)
+	internal.PrintJSONLog(tasks)
+}
+
+func seedUsers(ctx context.Context, client *ent.Client, count int) []*ent.User {
+	var bulkUsers []*ent.UserCreate
+	for i := 0; i < count; i++ {
+		bulkUsers = append(bulkUsers,
+			client.User.Create().
+				SetFirstName(faker.FirstName()).
+				SetLastName(faker.LastName()).
+				SetBirthday(time.Now()),
+		)
+	}
+	users, err := client.User.CreateBulk(bulkUsers...).Save(ctx)
+	internal.LogFatal(err)
+	return users
+}
+
+func seedTasks(ctx context.Context, client *ent.Client, users []*ent.User, count int) []*ent.Task {
+	rand.Seed(time.Now().UnixNano())
+
+	var bulkTasks []*ent.TaskCreate
+	for i := 0; i < count; i++ {
+		bulkTasks = append(bulkTasks,
+			client.Task.Create().
+				SetTitle(faker.Word()).
+				SetNote(faker.Sentence()).
+				SetStatus(task.StatusTodo).
+				SetUser(users[rand.Intn(len(users))]),
+		)
+	}
+	tasks, err := client.Task.CreateBulk(bulkTasks...).Save(ctx)
+	internal.LogFatal(err)
+	return tasks
 }
 
 func makeClient() *ent.Client {
